@@ -1,5 +1,5 @@
 package fr.insa.sosa.RestProject;
 
-public class Window {
+public class RoomTester {
 
 }
