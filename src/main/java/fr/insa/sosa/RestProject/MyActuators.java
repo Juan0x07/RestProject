@@ -1,7 +1,5 @@
 package fr.insa.sosa.RestProject;
 
-import java.util.List;
-
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -32,6 +30,7 @@ public class MyActuators {
     @Produces(MediaType.TEXT_PLAIN)
 	public boolean getState(@PathParam("id")String id) {
 		// get state of the actuator
+		
 		return room.getAct(id).getState(); 
     }
 	
@@ -41,14 +40,21 @@ public class MyActuators {
 	@Path("/myactuators/{id}")
     @Produces(MediaType.TEXT_PLAIN)
 	public String changeState(@PathParam("id")String id) {
-		// get state of the actuator
+		// change state of the actuator
 		room.getAct(id).changeState();  
 		return SUCCESS_RESULT;
     }
 		
 	// insert actuator with id
 	// http://localhost:8888/RestProject/webapi/actuatorservices/myactuators/id
-	
+	@POST
+	@Path("/myactuators/{id}")
+    @Produces(MediaType.TEXT_PLAIN)
+	public String insertAct(@PathParam("id")String id) {
+		// add new actuator with id
+		//room.getAct(id).changeState();  
+		return SUCCESS_RESULT;
+    }
 	
 	//delete actuator with id
 	// http://localhost:8888/RestProject/webapi/actuatorservices/myactuators/id
@@ -57,7 +63,7 @@ public class MyActuators {
     @Produces(MediaType.TEXT_PLAIN)
 	public String deleteAct(@PathParam("id")String id) {
 		// get state of the actuator
-		//room.getAct(id).changeState();  
+		room.deleteAct(id);  
 		return SUCCESS_RESULT;
     }
 	
