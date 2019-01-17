@@ -17,12 +17,12 @@ import fr.insat.om2m.tp2.mapper.Mapper;
 import fr.insat.om2m.tp2.mapper.MapperInterface;
 import httpRequest.HttpRequest;
 
-@Path("myressources")
-public class myRessources {
-	// mapper for creation of ressource
+@Path("myresources")
+public class myResources {
+	// mapper for creation of resource
 		MapperInterface mapper = new Mapper();
 		
-	// get ressources
+	// get resources
 	// get base
 	@GET
 	@Path("/in-cse")
@@ -40,13 +40,13 @@ public class myRessources {
 		return req.getReq("http://127.0.0.1:8080/~/in-cse?fu=1&api="+id);
 	}
 	
-	// add ressources
+	// add resources
 	// add AE application
 	@POST
 	@Path("/in-cse/{id}")
 	@Produces(MediaType.APPLICATION_XML)
 	public String createAE(@PathParam("id")String id) throws IOException{
-		// create ne ae with mapper
+		// create new ae with mapper
 		AE ae = new AE();
 		ae.setAppID(id);
 		ae.setRequestReachability(true);

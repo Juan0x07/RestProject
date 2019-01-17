@@ -1,26 +1,38 @@
 package fr.insa.sosa.RestProject;
 
-public class Sensor {
-	private String id;
-	private String type;
-	private String position;
+public class Sensor extends Device{
+	private String featureOfInterest;
+	private int measuredValue;
+	private String unit;
 	
-	public String getId() {
-		return id;
+	public Sensor(String id, String type, String position){
+		super();
+		this.setId(id);
+		this.setPosition(position);
+		this.setType(type);	
 	}
-	public void setId(String id) {
-		this.id = id;
+
+	public String getFeatureOfInterest() {
+		return featureOfInterest;
 	}
-	public String getType() {
-		return type;
+
+	public void setFeatureOfInterest(String featureOfInterest) {
+		this.featureOfInterest = featureOfInterest;
 	}
-	public void setType(String type) {
-		this.type = type;
+
+	public int getMeasuredValue() {
+		return measuredValue;
 	}
-	public String getPosition() {
-		return position;
+
+	public void setMeasuredValue(int measuredValue) {
+		this.measuredValue = measuredValue;
 	}
-	public void setPosition(String position) {
-		this.position = position;
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
 	}
 }
