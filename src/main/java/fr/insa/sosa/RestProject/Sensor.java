@@ -5,10 +5,9 @@ public class Sensor extends Device{
 	private int measuredValue;
 	private String unit;
 	
-	public Sensor(String id, String type, String position){
+	public Sensor(String id, String type){
 		super();
 		this.setId(id);
-		this.setPosition(position);
 		this.setType(type);	
 	}
 

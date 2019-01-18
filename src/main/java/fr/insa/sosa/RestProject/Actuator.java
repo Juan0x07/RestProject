@@ -4,10 +4,9 @@ package fr.insa.sosa.RestProject;
 public class Actuator extends Device{
 	private boolean state; // actuator state : false & true
 	
-	public Actuator(String id, String type, String position){
+	public Actuator(String id, String type){
 		super();
 		this.setId(id);
-		this.setPosition(position);
 		this.setType(type);
 		this.state = false;
 	}

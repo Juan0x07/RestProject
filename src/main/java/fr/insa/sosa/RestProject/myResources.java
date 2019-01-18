@@ -12,6 +12,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.om2m.commons.resource.AE;
+import org.eclipse.om2m.commons.resource.Container;
+import org.eclipse.om2m.commons.resource.ContentInstance;
 
 import fr.insat.om2m.tp2.mapper.Mapper;
 import fr.insat.om2m.tp2.mapper.MapperInterface;
@@ -20,7 +22,17 @@ import httpRequest.HttpRequest;
 @Path("myresources")
 public class myResources {
 	// mapper for creation of resource
-		MapperInterface mapper = new Mapper();
+	private	MapperInterface mapper = new Mapper();
+	// Resource ID
+	private String riRoom = "/mn-cse/CAE405435110";
+	private String riLight1 = "/mn-cse/CAE700878880";
+	private String riLight1data = "/mn-cse/cnt-626482413";
+	private String riLight1datastate = "/mn-cse/cin-563855193";
+	private String riLight2 = "/mn-cse/CAE461795889";
+	private String riLight2data = "/mn-cse/cnt-996746539";
+	private String riLight3 = "/mn-cse/CAE265107620";
+	// store the OM2M id of the resource (to do)
+	
 		
 	// get resources
 	// get base
@@ -33,27 +45,82 @@ public class myResources {
 	}
 	// get AE application
 	@GET
-	@Path("/in-cse/{id}") //AE - application services
+	@Path("/services/{id}") //AE - application services
 	@Produces(MediaType.APPLICATION_XML)
 	public String getRes2(@PathParam("id")String id) throws IOException{
 		HttpRequest req = new HttpRequest();	
-		return req.getReq("http://127.0.0.1:8080/~/in-cse?fu=1&api="+id);
+		return req.getReq("http://127.0.0.1:8080/~/mn-cse?fu=1&api="+id);
 	}
 	
 	// add resources
-	// add AE application
+	// add AE 
 	@POST
-	@Path("/in-cse/{id}")
+	@Path("/services/{id}")
 	@Produces(MediaType.APPLICATION_XML)
 	public String createAE(@PathParam("id")String id) throws IOException{
 		// create new ae with mapper
 		AE ae = new AE();
+		//ae.setAEID(id);
+		//ae.setResourceID(id);
+		ae.setName(id);
 		ae.setAppID(id);
 		ae.setRequestReachability(true);
 		String representation = mapper.marshal(ae);
 		// send request
 		HttpRequest req = new HttpRequest();	
-		return req.postReq("http://127.0.0.1:8080/~/in-cse/","2", representation);
+		return req.postReq("http://127.0.0.1:8080/~/mn-cse","2", representation);
 	}
+
+	// add CNT data
+	@POST
+	@Path("/services/Light/data")
+	@Produces(MediaType.APPLICATION_XML)
+	public String createCntData() throws IOException{
+		// create new cnt with mapper
+		Container cnt = new Container();
+		cnt.setName("DATA");
+		String representation = mapper.marshal(cnt);
+		// send request
+		HttpRequest req = new HttpRequest();	
+		return req.postReq("http://127.0.0.1:8080/~"+riLight2,"3", representation);
+	}
+	// add cin data
+		@POST
+		@Path("/services/Light/data/state")
+		@Produces(MediaType.APPLICATION_XML)
+		public String createCinData() throws IOException{
+			// create new light
+			Light light = new Light("Light1");
+			// create new cin with mapper
+			ContentInstance cin = new ContentInstance();
+			cin.setName("State");
+			cin.setContent(Boolean.toString(light.getState()));
+			String representation = mapper.marshal(cin);
+			// send request
+			HttpRequest req = new HttpRequest();	
+			return req.postReq("http://127.0.0.1:8080/~"+riLight1data,"4", representation);
+		}
+		
+	// get state of light
+		@GET
+		@Path("/services/Light/data/state")
+		@Produces(MediaType.APPLICATION_XML)
+		public String getCinData() throws IOException{
+			// send request
+			HttpRequest req = new HttpRequest();	
+			String representation= req.getReq("http://127.0.0.1:8080/~"+riLight1datastate);
+			ContentInstance cin = (ContentInstance) mapper.unmarshal(representation);				
+			return cin.getContent();
+		}
 	
+	// delete resources
+	// delete AE 
+	@DELETE
+	@Path("/services/{id}")
+	@Produces(MediaType.APPLICATION_XML)
+	public String deleteAE(@PathParam("id")String id) throws IOException{
+		// send request
+		HttpRequest req = new HttpRequest();	
+		return req.deleteReq("http://127.0.0.1:8080/~/mn-cse/id");
+	}
 }

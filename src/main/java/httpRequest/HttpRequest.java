@@ -38,7 +38,7 @@ public class HttpRequest {
 		os.close(); 
 	}
 
-	// create a get request
+	// create a get request (need the url of resource) -- retrieve 
 	public String getReq(String url) throws IOException{
 		URL u = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) u.openConnection();
@@ -54,7 +54,7 @@ public class HttpRequest {
 	}
 
 	
-	// create a post request (need the type of resource)
+	// create a post request (need the type of resource) -- create
 	public String postReq(String url, String type, String representation) throws IOException{
 		URL u = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) u.openConnection();
@@ -70,4 +70,36 @@ public class HttpRequest {
 		//read response
 		return response(con);
 	}
+	
+	// create a put request (need the type of resource) -- update
+		public String putReq(String url, String type, String representation) throws IOException{
+			URL u = new URL(url);
+			HttpURLConnection con = (HttpURLConnection) u.openConnection();
+			//set method: POST
+			con.setRequestMethod("PUT");
+			//set headers
+			con.setRequestProperty("X-M2M-Origin", "admin:admin");
+			con.setRequestProperty("Content-Type", "application/xml;ty="+type);
+			//set body
+			setBody(con,representation);
+			//send request
+			int status = con.getResponseCode();
+			//read response
+			return response(con);
+		}
+	
+	// create a delete request (need the url of resource) -- delete
+		public String deleteReq(String url) throws IOException{
+			URL u = new URL(url);
+			HttpURLConnection con = (HttpURLConnection) u.openConnection();
+			//set method: POST
+			con.setRequestMethod("DELETE");
+			//set headers
+			con.setRequestProperty("X-M2M-Origin", "admin:admin");
+			con.setRequestProperty("Content-Type", "application/xml");			
+			//send request
+			int status = con.getResponseCode();
+			//read response
+			return response(con);
+		}
 }
