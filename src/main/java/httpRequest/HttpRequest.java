@@ -72,14 +72,14 @@ public class HttpRequest {
 	}
 	
 	// create a put request (need the type of resource) -- update
-		public String putReq(String url, String type, String representation) throws IOException{
+		public String putReq(String url, String representation) throws IOException{
 			URL u = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) u.openConnection();
 			//set method: POST
 			con.setRequestMethod("PUT");
 			//set headers
 			con.setRequestProperty("X-M2M-Origin", "admin:admin");
-			con.setRequestProperty("Content-Type", "application/xml;ty="+type);
+			con.setRequestProperty("Content-Type", "application/xml");
 			//set body
 			setBody(con,representation);
 			//send request

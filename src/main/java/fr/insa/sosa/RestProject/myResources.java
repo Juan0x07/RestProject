@@ -84,22 +84,21 @@ public class myResources {
 		HttpRequest req = new HttpRequest();	
 		return req.postReq("http://127.0.0.1:8080/~"+riLight2,"3", representation);
 	}
+	
 	// add cin data
-		@POST
-		@Path("/services/Light/data/state")
-		@Produces(MediaType.APPLICATION_XML)
-		public String createCinData() throws IOException{
-			// create new light
-			Light light = new Light("Light1");
-			// create new cin with mapper
-			ContentInstance cin = new ContentInstance();
-			cin.setName("State");
-			cin.setContent(Boolean.toString(light.getState()));
-			String representation = mapper.marshal(cin);
-			// send request
-			HttpRequest req = new HttpRequest();	
-			return req.postReq("http://127.0.0.1:8080/~"+riLight1data,"4", representation);
-		}
+			@POST
+			@Path("/services/Light/data/state/{state}")
+			@Produces(MediaType.APPLICATION_XML)
+			public String createCinData(@PathParam("state")String state) throws IOException{			
+				// create new cin with mapper
+				ContentInstance cin = new ContentInstance();
+				cin.setContent(state);
+				String representation = mapper.marshal(cin);
+				// send request
+				HttpRequest req = new HttpRequest();	
+				return req.postReq("http://127.0.0.1:8080/~"+riLight1data,"4", representation);
+			}
+
 		
 	// get state of light
 		@GET
@@ -108,11 +107,41 @@ public class myResources {
 		public String getCinData() throws IOException{
 			// send request
 			HttpRequest req = new HttpRequest();	
-			String representation= req.getReq("http://127.0.0.1:8080/~"+riLight1datastate);
+			String representation= req.getReq("http://127.0.0.1:8080/~/mn-cse/mn-name/Light1/DATA/la");
 			ContentInstance cin = (ContentInstance) mapper.unmarshal(representation);				
 			return cin.getContent();
 		}
 	
+	// turn on the light : change state of light
+		@PUT
+		@Path("/services/Light/data/on")
+		@Produces(MediaType.APPLICATION_XML)
+		public String turnOnLight() throws IOException{
+			// send request to get current state of light
+			HttpRequest req = new HttpRequest();	
+			String representation= req.getReq("http://127.0.0.1:8080/~"+riLight1datastate);
+			ContentInstance cin = (ContentInstance) mapper.unmarshal(representation);
+			// turn on light
+			if (!cin.getContent().equals("on")){cin.setContent("on");}
+			representation = mapper.marshal(cin);
+			// send put request		
+			return req.putReq("http://127.0.0.1:8080/~"+riLight1datastate, representation);
+		}
+		// turn off the light : change state of light
+			@PUT
+			@Path("/services/Light/data/off")
+			@Produces(MediaType.APPLICATION_XML)
+			public String turnOffLight() throws IOException{
+				// send request to get current state of light
+				HttpRequest req = new HttpRequest();	
+				String representation= req.getReq("http://127.0.0.1:8080/~"+riLight1datastate);
+				ContentInstance cin = (ContentInstance) mapper.unmarshal(representation);
+				// turn on light
+				if (!cin.getContent().equals("off")){cin.setContent("off");}
+				representation = mapper.marshal(cin);
+				// send put request		
+				return "hi";//req.putReq("http://127.0.0.1:8080/~"+riLight1datastate,"4", representation);
+			}
 	// delete resources
 	// delete AE 
 	@DELETE
