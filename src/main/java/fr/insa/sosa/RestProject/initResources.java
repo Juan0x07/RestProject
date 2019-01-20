@@ -28,7 +28,9 @@ public class initResources {
 	@POST
 	@Path("/{type}/{id}")
 	@Produces(MediaType.APPLICATION_XML)
-	public String createAE(@PathParam("id")String id) throws IOException{
+	public String createAE( @PathParam("type")String type,
+							@PathParam("id")String id) throws IOException{
+		String r = null;
 		// create new ae with mapper
 		AE ae = new AE();
 		ae.setName(id);
@@ -37,14 +39,26 @@ public class initResources {
 		String representation = mapper.marshal(ae);
 		// send request
 		HttpRequest req = new HttpRequest();	
-		req.postReq("http://127.0.0.1:8080/~/mn-cse","2", representation);
-		// create new cnt with mapper
+		r += req.postReq("http://127.0.0.1:8080/~/mn-cse","2", representation);
+		// create new cnt-DATA with mapper
 		Container cnt = new Container();
 		cnt.setName("DATA");
 		representation = mapper.marshal(cnt);
 		// send request	
-		return req.postReq("http://127.0.0.1:8080/~/mn-cse/mn-name/"+id,"3", representation);
-	}
+		r += req.postReq("http://127.0.0.1:8080/~/mn-cse/mn-name/"+id,"3", representation);
+		// create new cnt-TYPE with mapper
+		cnt.setName("TYPE");
+		representation = mapper.marshal(cnt);
+		// send request	
+		r += req.postReq("http://127.0.0.1:8080/~/mn-cse/mn-name/"+id,"3", representation);
+		// create new cin with mapper
+		ContentInstance cin = new ContentInstance();
+		cin.setContent(type);
+		representation = mapper.marshal(cin);
+		// send request	
+		r += req.postReq("http://127.0.0.1:8080/~/mn-cse/mn-name/"+id+"/TYPE","4", representation);
+		return r;
+}
 	
 	// delete resources
 	// delete AE 
