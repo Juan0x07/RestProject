@@ -32,24 +32,9 @@ public class myResources {
 		// send request
 		HttpRequest req = new HttpRequest();	
 		String representation = req.getReq(
-				"http://127.0.0.1:8080/~/mn-cse/mn-name/"+id+"/DATA/la");
+				"http://127.0.0.1:8080/~/in-cse/in-name/"+id+"/DATA/la");
 		ContentInstance cin = (ContentInstance) mapper.unmarshal(representation);
 		return cin.getContent();
-	}
-	
-	// add data
-	@POST
-	@Path("/{type}/{id}/{data}")
-	@Produces(MediaType.APPLICATION_XML)
-	public String createCntData(@PathParam("id")String id,
-								@PathParam("data")String data) throws IOException{
-		// create new cin with mapper
-		ContentInstance cin = new ContentInstance();
-		cin.setContent(data);
-		String representation = mapper.marshal(cin);
-		// send request
-		HttpRequest req = new HttpRequest();	
-		return req.postReq("http://127.0.0.1:8080/~/mn-cse/mn-name/"+id+"/DATA","4", representation);
 	}
 	
 	// delete data
@@ -59,9 +44,42 @@ public class myResources {
 	public String deleteCntData(@PathParam("id")String id,
 								@PathParam("data")String data) throws IOException{			
 		HttpRequest req = new HttpRequest();	
-		return req.deleteReq("http://127.0.0.1:8080/~/mn-cse/mn-name/"+id+"/"+data+"/ol");
+		return req.deleteReq("http://127.0.0.1:8080/~/in-cse/in-name/"+id+"/"+data+"/ol");
 	}
 
+	// change light and alarm and heating state
+	@POST
+	@Path("/{type:light|alarm|heating}/{id}/{data}")
+	@Produces(MediaType.APPLICATION_XML)
+	public String changeOnOff(@PathParam("id")String id, @PathParam("data")String data) throws IOException{
+		// create new cin with mapper
+		if (data.equals("on") || data.equals("off")){
+			ContentInstance cin = new ContentInstance();
+			cin.setContent(data);
+			String representation = mapper.marshal(cin);
+			// send request
+			HttpRequest req = new HttpRequest();	
+			return req.postReq("http://127.0.0.1:8080/~/in-cse/in-name/"+id+"/DATA","4", representation);
+		}
+		return "bad parameter";
+	}
+		
+	// change window and door state
+	@POST
+	@Path("/{type:window|door}/{id}/{data}")
+	@Produces(MediaType.APPLICATION_XML)
+	public String changeWindow(@PathParam("id")String id, @PathParam("data")String data) throws IOException{
+		// create new cin with mapper
+		if (data.equals("open") || data.equals("closed")){
+			ContentInstance cin = new ContentInstance();
+			cin.setContent(data);
+			String representation = mapper.marshal(cin);
+			// send request
+			HttpRequest req = new HttpRequest();	
+			return req.postReq("http://127.0.0.1:8080/~/in-cse/in-name/"+id+"/DATA","4", representation);
+		}
+		return "bad parameter";
+	}
 	
 	
 }

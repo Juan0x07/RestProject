@@ -102,4 +102,17 @@ public class HttpRequest {
 			//read response
 			return response(con);
 		}
+		
+	// requests for monitor to provide services
+		// create a post request (need the type of resource) -- create
+		public String reqAPI(String method, String url) throws IOException{
+			URL u = new URL(url);
+			HttpURLConnection con = (HttpURLConnection) u.openConnection();
+			//set method
+			con.setRequestMethod(method);
+			//send request
+			int status = con.getResponseCode();
+			//read response
+			return response(con);
+		}
 }
