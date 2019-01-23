@@ -66,45 +66,96 @@ public class HttpServer {
 				return;
 			}*/
 			
+			
+			
 			// services :) finally !!!
 			// we do it static : change services by hands :(
 			
-			// service 1 : if there is no one in the room, light go off
-			if (id.equals("Sensor") & data.equals("off")){
-				HttpRequest reqApi = new HttpRequest();
-				// turn off Light1-4
-				reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/light/Light1/off");
-				reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/light/Light2/off");
-				reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/light/Light3/off");
-				reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/light/Light4/off");
+			// services only be provide from 7 to 22
+			HttpRequest reqApi = new HttpRequest();
+			int t = Integer.valueOf(reqApi.reqAPI("GET", "http://localhost:8888/RestProject/webapi/myresources/clock/Clock"));
+			if ((t >= 7)& (t < 22)){
+				// service 1 : if there is no one in the room, light go off
+				if (id.equals("Sensor")){
+					
+					if (data.equals("off")){
+					// turn off Light1-4
+					reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/light/Light1/off");
+					reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/light/Light2/off");
+					reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/light/Light3/off");
+					reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/light/Light4/off");
+					}
+					
+				// if there is someone in the room, light turn on
+					else if (data.equals("on")){
+					// turn on Light1-4
+					reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/light/Light1/on");
+					reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/light/Light2/on");
+					reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/light/Light3/on");
+					reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/light/Light4/on");
+					}
+				}
+	
+				
+				
+				// service 3 : 
+				//If the outside temperature is lower than the indoor temperature and 
+				//the inside temperature is higher than 28°C and the outside temperature 
+				//is between 17°C and lower than the inside temperature,
+				//the windows should be opened automatically.
+				if (id.equals("TempInt")){
+					t = Integer.valueOf(reqApi.reqAPI("GET", "http://localhost:8888/RestProject/webapi/myresources/tempSensor/TempExt"));
+					// check TempInt & TempExt 
+					if ((Integer.valueOf(data) > 28) & (t>17) & (t<(Integer.valueOf(data))) ) {
+					// turn on Window1-4
+					reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/window/Window1/open");
+					reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/window/Window2/open");
+					reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/window/Window3/open");
+					reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/window/Window4/open");
+					// turn off Heating1
+					reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/heating/Heating1/off");
+					}
+				
+				// if the temperature is less than 10 the heating turns on 
+				// and the windows are closed
+					if ((Integer.valueOf(data) < 10)){
+						// turn on Heating1
+						reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/heating/Heating1/on");
+						// close Window1-4
+						reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/window/Window1/closed");
+						reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/window/Window2/closed");
+						reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/window/Window3/closed");
+						reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/window/Window4/closed");
+					}
+				}
+			}else{
+				// service 2 : 22h lights off 
+				
+				if ( id.equals("Clock") ){
+				//close & turn off all 
+					if (data.equals("22")){
+						// turn off Light1-4
+						reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/light/Light1/off");
+						reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/light/Light2/off");
+						reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/light/Light3/off");
+						reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/light/Light4/off");
+						// close Window1-4
+						reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/window/Window1/closed");
+						reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/window/Window2/closed");
+						reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/window/Window3/closed");
+						reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/window/Window4/closed");
+						// close Door1-2
+						reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/door/Door1/closed");
+						reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/door/Door2/closed");
+						// turn off heating
+						reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/heating/Heating1/off");
+					}
+				}	
+				//22h to 8h next day, if have person still in the room alarm turns on
+				if ( (id.equals("Sensor") & data.equals("on")) ){
+					reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/alarm/Alarm1/on");
+				}
 			}
-			
-			// service 2 : 22h lights off, if have person still in the room alarm turns on
-			//
-			if ( (id.equals("Sensor") & data.equals("on")) /* à finir */){
-				HttpRequest reqApi = new HttpRequest();
-				// turn on Alarm1
-				reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/alarm/Alarm1/on");
-			}
-			
-			// service 3 : if the temperature is more than 20 all the windows open; 
-			// 			   if the temperature is less than 20 the heating turns on
-			if (id.equals("TempInt") & (Integer.valueOf(data) > 20)){
-				HttpRequest reqApi = new HttpRequest();
-				// turn on Window1-4
-				System.out.println("open the windows");
-				reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/window/Window1/open");
-				reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/window/Window2/open");
-				reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/window/Window3/open");
-				reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/window/Window4/open");
-			}
-			if (id.equals("TempInt") & (Integer.valueOf(data) < 20)){
-				HttpRequest reqApi = new HttpRequest();
-				// turn on Heating1
-				System.out.println("turn on the heating");
-				reqApi.reqAPI("POST", "http://localhost:8888/RestProject/webapi/myresources/heating/Heating1/on");
-			}
-			
 			resp.setStatus(HttpServletResponse.SC_OK);
 		}
 
